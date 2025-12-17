@@ -27,29 +27,29 @@
             fps: 10, 
             qrbox: { width: 250, height: 250 } 
         });
-
         async function onScanSuccess(decodedText) {
-            try {
-                // Expecting QR: {"id":"101", "name":"John Doe"}
-                const userData = JSON.parse(decodedText);
-                document.getElementById('status').innerText = "Processing " + userData.name + "...";
+    // decodedText is now just "101,John Doe"
+    document.getElementById('status').innerText = "Scanning: " + decodedText;
 
-                const response = await fetch(SCRIPT_URL, {
-                    method: "POST",
-                    body: JSON.stringify(userData)
-                });
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: decodedText // Send the raw string directly
+        });
 
-                const result = await response.text();
-                document.getElementById('status').innerHTML = `<span class="success">${result}</span>`;
-                
-                // Pause scanning for 3 seconds to avoid double-scans
-                html5QrcodeScanner.pause();
-                setTimeout(() => html5QrcodeScanner.resume(), 3000);
+        const result = await response.text();
+        document.getElementById('status').innerHTML = `<span class="success">${result}</span>`;
+        
+        // Pause to prevent double scans
+        html5QrcodeScanner.pause();
+        setTimeout(() => html5QrcodeScanner.resume(), 3000);
 
-            } catch (err) {
-                document.getElementById('status').innerHTML = `<span class="error">Invalid QR Code format</span>`;
-            }
-        }
+    } catch (err) {
+        document.getElementById('status').innerHTML = `<span class="error">Server Error</span>`;
+    }
+}
+
+
 
         html5QrcodeScanner.render(onScanSuccess);
     </script>
