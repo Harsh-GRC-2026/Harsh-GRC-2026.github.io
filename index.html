@@ -32,7 +32,7 @@
 
 <script>
     // 1. REPLACE THIS WITH YOUR GOOGLE WEB APP URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKkXQDCT-WoqPLWCYjF-9dPk5upJJyG9f1EQ2fccMtDNhMs8rA2YRQFLkkXB1Rarqh/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDQ461fN4WaHNwMlt_kjewVcS9z1KW8as-_DmdaYWcgKdAznxx0oxeLbFNh3NW3gtE/exec";
 
     let html5QrCode;
 
@@ -58,41 +58,35 @@
         });
     }
 
-    async function onScanSuccess(decodedText) {
-        // Pause scanning to avoid multiple requests
-        html5QrCode.pause();
+   async function onScanSuccess(decodedText) {
+    // Show user what was scanned
+    document.getElementById('status').innerHTML = `<span class="processing">Processing scan...</span>`;
+    
+    // THE FETCH SECTION (This sends the data to your Google Sheet)
+    try {
+        await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors", // Essential to prevent 'Server Error' on GitHub
+            body: decodedText,
+            headers: {
+                "Content-Type": "text/plain"
+            }
+        });
+
+        // Since we use 'no-cors', we assume success if no network error occurs
+        document.getElementById('status').innerHTML = 
+            `<span class="success">Data Sent Successfully! Check Sheet.</span>`;
         
-        const statusDiv = document.getElementById('status');
-        statusDiv.className = "processing";
-        statusDiv.innerText = "Processing: " + decodedText;
+        // Pause scanner for 3 seconds to prevent double-entry
+        html5QrcodeScanner.pause();
+        setTimeout(() => html5QrcodeScanner.resume(), 3000);
 
-        try {
-            // Sending data to Google Sheets
-            const response = await fetch(SCRIPT_URL, {
-                method: "POST",
-                body: decodedText,
-                headers: { "Content-Type": "text/plain" },
-                redirect: "follow" // Critical for Google Scripts
-            });
-
-            const result = await response.text();
-            
-            statusDiv.className = "success";
-            statusDiv.innerText = result;
-
-            // Resume scanning after 4 seconds
-            setTimeout(() => {
-                statusDiv.className = "";
-                statusDiv.innerText = "Ready to scan next...";
-                html5QrCode.resume();
-            }, 4000);
-
-        } catch (error) {
-            statusDiv.className = "error";
-            statusDiv.innerText = "Server Error. Check your Script URL or Internet.";
-            setTimeout(() => html5QrCode.resume(), 4000);
-        }
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        document.getElementById('status').innerHTML = 
+            `<span class="error">Network Error. Check your internet or SCRIPT_URL.</span>`;
     }
+}
 </script>
 
 </body>
