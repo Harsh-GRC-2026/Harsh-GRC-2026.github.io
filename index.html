@@ -34,31 +34,9 @@
     // 1. REPLACE THIS WITH YOUR GOOGLE WEB APP URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDQ461fN4WaHNwMlt_kjewVcS9z1KW8as-_DmdaYWcgKdAznxx0oxeLbFNh3NW3gtE/exec";
 
-    let html5QrCode;
+    
 
-    function initScanner() {
-        document.getElementById('start-btn').style.display = 'none';
-        document.getElementById('status').innerText = "Initializing camera...";
-
-        html5QrCode = new Html5Qrcode("reader");
-        
-        const config = { 
-          fps: 15, // Increase frames per second for faster detection
-          qrbox: { width: 300, height: 300 }, // Make the scanning box slightly larger
-          aspectRatio: 1.0 // Keep it square
-        };
-
-        html5QrCode.start(
-            { facingMode: "environment" }, 
-            config, 
-            onScanSuccess
-        ).catch(err => {
-            document.getElementById('status').innerHTML = `<span class="error">Camera Error: ${err}. Ensure you allowed permissions.</span>`;
-            document.getElementById('start-btn').style.display = 'inline-block';
-        });
-    }
-
-   async function onScanSuccess(decodedText) {
+async function onScanSuccess(decodedText) {
     // Show user what was scanned
     document.getElementById('status').innerHTML = `<span class="processing">Processing scan...</span>`;
     
