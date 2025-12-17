@@ -21,7 +21,7 @@
 
     <script>
         // PASTE YOUR GOOGLE WEB APP URL HERE
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUNzAelXJlF3lS3eJSIoNXqbvx-8bEA9dvy_3aqvcqddLQp9B-QK2qP7mVeXTlG-jg/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx57fnckT8R9nKOJMV2SI5kqi8ZVggRl97MJd-wzf15me6XPXXMyjJBBVAmBDRdJnQ/exec";
 
         const html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
             fps: 10, 
