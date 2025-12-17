@@ -42,7 +42,11 @@
 
         html5QrCode = new Html5Qrcode("reader");
         
-        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        const config = { 
+          fps: 15, // Increase frames per second for faster detection
+          qrbox: { width: 300, height: 300 }, // Make the scanning box slightly larger
+          aspectRatio: 1.0 // Keep it square
+        };
 
         html5QrCode.start(
             { facingMode: "environment" }, 
